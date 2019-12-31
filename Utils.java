@@ -4,6 +4,8 @@ import java.lang.Math;
 
 public class Utils extends Global {
 
+    private static String OS = System.getProperty("os.name").toLowerCase();
+
     // -----------------------------------------------------------------------------
     //  Utility functions
     // -----------------------------------------------------------------------------
@@ -96,5 +98,55 @@ public class Utils extends Global {
         }
         return points;
     }
+
+    //OS VALIDATOR START
+    public int osValidator() {
+	
+	
+		if (isWindows()) {
+			return 1;
+		} else if (isMac()) {
+			return 2;
+		} else if (isUnix()) {
+			return 3;
+		} else if (isSolaris()) {
+			return 4;
+		} else {
+			return 5;
+		}
+	
+    }
+    //OS VALIDATOR END
+
+    //OS Validator utilities START
+	public static boolean isWindows() {
+
+		return (OS.indexOf("win") >= 0);
+
+	}
+
+	public static boolean isMac() {
+
+		return (OS.indexOf("mac") >= 0);
+
+	}
+
+	public static boolean isUnix() {
+
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+		
+	}
+
+	public static boolean isSolaris() {
+
+		return (OS.indexOf("sunos") >= 0);
+
+	}
+    
+    //OS Validator utilities END
+
+
+
+    
 
 }

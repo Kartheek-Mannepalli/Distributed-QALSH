@@ -25,6 +25,28 @@ public class Global {
     // size of type <bool>
     // final static int SIZEBOOL = Boolean.BYTES;
 
+    									// file header size
+    final int BFHEAD_LENGTH = (int) (Integer.BYTES * 2);
+    									// index size of leaf node
+    const int INDEX_SIZE_LEAF_NODE = 4096;
+
     final static int MAXK = 100;    // max top-k value
+
+    char[] INDEX_PATH = new char[1000];
+    char[] DATA_BIN_PATH = new char[1000];
+    boolean isQinDS;
+    double INDEXING_TIME;
+    double GT_TIME;
+
+
+    // Timers for indexing (omid) (begin)
+    final double READ_DS_TIME;
+    final double WRITE_DS_BIN_TIME;
+    final double INIT_PARAMS_TIME;
+    final double INIT_HASH_TIME;
+    final double PROJ_POINTS_TIME;
+    final double SORT_TIME;
+    final double BUILD_WRITE_TREE_TIME;
+    // Timers for indexing (omid) (end)
 
 }

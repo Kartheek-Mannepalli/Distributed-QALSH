@@ -102,4 +102,59 @@ public class Ann extends Global {
     }
     // ground_truth end
 
-}
+    public int indexing(						// build hash tables for the dataset
+	    int   n,							// number of data points
+	    int   d,							// dimension of space
+	    int   B,							// page size
+	    float ratio,						// approximation ratio
+	    char[] data_set,						// address of data set
+	    char[] output_folder)				// folder to store info of qalsh
+    {
+
+        long start_ground_truth_time = System.currentTimeMillis(); // Indexing time (omid)
+
+        // Initialize timers (omid)
+        READ_DS_TIME = 0;
+        WRITE_DS_BIN_TIME = 0;
+        INIT_PARAMS_TIME = 0;
+        INIT_HASH_TIME = 0;
+        PROJ_POINTS_TIME = 0;
+        SORT_TIME = 0;
+        BUILD_WRITE_TREE_TIME = 0;
+
+	    // -------------------------------------------------------------------------
+	    //  Read data set
+	    // -------------------------------------------------------------------------
+
+        g_memory += SIZEFLOAT * n * d;	
+	    if (utils_obj.check_mem()) return 1;
+
+        long read_ds_time_start = System.currentTimeMillis();
+        float[][] data = new float[n][d];
+	    //for (int i = 0; i < n; i++) data[i] = new float[d];
+        data = utils_obj.read_set(n, d, data_set, data);
+        if (data == null) {
+            System.out.println("Reading Dataset Error!\n");
+            System.exit(1);
+        }
+	    
+        long read_ds_time_end = System.currentTimeMillis();
+        READ_DS_TIME += read_ds_time_end - read_ds_time_start;
+
+
+        long t_write_ds_bin_start = System.currentTimeMillis();
+
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(DATA_BIN_PATH));
+
+        for (int pid = 0; pid < n; pid++)
+            for (int dim = 0; dim < d; dim++)
+                dos.writeFloat(data[pid][dim]);
+
+        long t_write_ds_bin_end = System.currentTimeMillis();
+        WRITE_DS_BIN_TIME += t_write_ds_bin_end - t_write_ds_bin_start;
+
+        Qalsh lsh = new Qalsh();
+        lsh.init(n, d, B, ratio, output_folder);
+	    lsh.bulkload(data);
+
+    }

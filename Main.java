@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Main extends Global{
 
     // atoi method start
     public static int myAtoi(String str) {
@@ -78,14 +78,14 @@ public class Main {
         char[] truth_set = new char[200]; // address of ground truth file
         char[] output_folder = new char[200]; // output folder
 
-        // Global variable start
+/*        // Global variable start
         char[] INDEX_PATH = new char[1000];
         char[] DATA_BIN_PATH = new char[1000];
         boolean isQinDS;
         double INDEXING_TIME;
         double GT_TIME;
         // Global variable end
-
+*/
         boolean failed = false;
         int cnt = 1;
 
