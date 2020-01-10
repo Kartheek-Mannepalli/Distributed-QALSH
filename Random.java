@@ -66,6 +66,17 @@ public class Random extends Global {
 	    return ret;
     }
 
+    // -----------------------------------------------------------------------------
+    public float gaussian_cdf(					// cdf of N(0, 1) in range (-inf, x]
+        float x,							// integral border
+        float step)							// step increment
+    {
+        float ret = 0.0f;
+        for (float i = -10.0f; i < x; i += step) {
+            ret += step * gaussian_pdf(i);
+        }
+        return ret;
+    }
 
     // -----------------------------------------------------------------------------
     public float new_gaussian_cdf(				// cdf of N(0, 1) in range [-x, x]
@@ -84,10 +95,19 @@ public class Random extends Global {
 	    return ret;
     }
 
+    // -----------------------------------------------------------------------------
+    //  query-oblivious and query-aware collision probability under gaussian distr
+    // -----------------------------------------------------------------------------
+    public float orig_gaussian_prob(			// calc original gaussian probability
+        float x)							// x = w / r
+    {
+        float norm = gaussian_cdf(-x, 0.001F);
+        float tmp = 2.0F * (1.0F - Math.exp(-x * x / 2.0F)) / (Math.sqrt(2.0F * PI) * x);
 
-
-
-
+        float p = 1.0F - 2.0F * norm - tmp;
+        return p;
+    }
+    
     // -----------------------------------------------------------------------------
     public float new_gaussian_prob(			// calc new gaussian probability
 	    float x)							// x = w / (2 * r)
@@ -96,7 +116,87 @@ public class Random extends Global {
 	    return p;
     }
 
+    // -----------------------------------------------------------------------------
+    //  probability vs. w for a fixed ratio c
+    // -----------------------------------------------------------------------------
+    public void prob_of_gaussian()				// curve of p1, p2 vs. w under gaussian
+    {
+        System.out.printf("probability vs. w for c = {2.0, 3.0} under gaussian\n");
 
+        float c[2] = {2.0f, 3.0f};
+        float orig_p1, orig_p2, new_p1, new_p2;
 
+        for (int i = 0; i < 2; i++) {
+            System.out.printf("c = %.1f\n", c[i]);
+
+            for (float w = 0.5f; w < 10.1f; w += 0.5f) {
+                orig_p1 = orig_gaussian_prob(w);
+                orig_p2 = orig_gaussian_prob(w / c[i]);
+
+                new_p1 = new_gaussian_prob(w / 2.0f);
+                new_p2 = new_gaussian_prob(w / (2.0f * c[i]));
+
+                System.out.printf("%.1f\t%.4f\t%.4f\t%.4f\t%.4f\n", 
+                    w, orig_p1, orig_p2, new_p1, new_p2);
+            }
+            SYstem.out.printf("\n");
+        }
+    }
+
+    // -----------------------------------------------------------------------------
+    //  the difference (p1 - p2) vs. w for a fixed ratio
+    // -----------------------------------------------------------------------------
+    public void diff_prob_of_gaussian()		// curve of p1 - p2 vs. w under gaussian
+    {
+        System.out.printf("prob of diff vs. w for c = {2.0, 3.0} under gaussian\n");
+
+        float c[2] = {2.0f, 3.0f};
+        float orig_p1, orig_p2, new_p1, new_p2, orig_diff, new_diff;	
+
+        for (int i = 0; i < 2; i++) {
+            System.out.printf("c = %.1f\n", c[i]);
+
+            for (float w = 0.5f; w < 10.1f; w += 0.5f) {
+                orig_p1 = orig_gaussian_prob(w);
+                orig_p2 = orig_gaussian_prob(w / c[i]);
+                orig_diff = orig_p1 - orig_p2;
+
+                new_p1 = new_gaussian_prob(w / 2.0f);
+                new_p2 = new_gaussian_prob(w / (2.0f * c[i]));
+                new_diff = new_p1 - new_p2;
+
+                System.out.printf("%.1f\t%.4f\t%.4f\n", w, orig_diff, new_diff);
+            }
+            System.out.printf("\n");
+        }
+    }
+
+    // -----------------------------------------------------------------------------
+    //  rho = log(1/p1) / log(1/p2) vs. w for a fixed ratio c
+    // -----------------------------------------------------------------------------
+    public void rho_of_gaussian()				// curve of rho vs. w under gaussian
+    {
+        System.out.printf("rho vs. w for c = {2.0, 3.0} under gaussian\n");
+
+        float c[2] = {2.0f, 3.0f};
+        float orig_p1, orig_p2, new_p1, new_p2, orig_rho, new_rho;
+
+        for (int i = 0; i < 2; i++) {
+            System.out.printf("c = %.1f\n", c[i]);
+
+            for (float w = 0.5f; w < 10.1f; w += 0.5f) {
+                orig_p1 = orig_gaussian_prob(w);
+                orig_p2 = orig_gaussian_prob(w / c[i]);
+                orig_rho = Math.log(1.0f / orig_p1) / Math.log(1.0f / orig_p2);
+
+                new_p1 = new_gaussian_prob(w / 2.0f);
+                new_p2 = new_gaussian_prob(w / (2.0f * c[i]));
+                new_rho = Math.log(1.0f / new_p1) / Math.log(1.0f / new_p2);
+
+                System.out.printf("%.1f\t%.4f\t%.4f\t%.4f\n", w, orig_rho, new_rho, 1.0f/c[i]);
+            }
+            System.out.printf("\n");
+        }
+    }
 
 }

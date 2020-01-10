@@ -37,6 +37,20 @@ public class Global {
     boolean isQinDS;
     double INDEXING_TIME;
     double GT_TIME;
+    double QUERY_TIME;
+    double ALG_TIME;
+    double DIST_CALC_TIME;
+    double INDEX_IO_TIME;
+    double DATA_IO_TIME;
+    int INDEX_IO_NUM = 0;
+    int DATA_IO_NUM = 0;
+    double INDEX_IO_SIZE;
+    double DATA_IO_SIZE;
+    double VR_ALG_TIME;
+    double VR_IO_TIME;
+    double VR_TIME;
+    int VR_COUNT = 0;
+    boolean VR_FLAG = false;
 
 
     // Timers for indexing (omid) (begin)
